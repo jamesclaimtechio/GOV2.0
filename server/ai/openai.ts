@@ -144,8 +144,9 @@ IMPORTANT: Return ONLY valid JSON matching this exact schema. No markdown, no ex
       throw new Error('No response from OpenAI')
     }
 
-    // Parse and validate JSON response
-    const parsed = JSON.parse(content)
+    // Clean and parse JSON response (handle markdown wrapping)
+    const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    const parsed = JSON.parse(cleanContent)
     return ComplianceMapSchema.parse(parsed)
 
   } catch (error) {
@@ -172,7 +173,8 @@ IMPORTANT: Return ONLY valid JSON matching this exact schema. No markdown, no ex
         throw new Error('No response from fallback model')
       }
 
-      const parsed = JSON.parse(fallbackContent)
+      const cleanFallbackContent = fallbackContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+      const parsed = JSON.parse(cleanFallbackContent)
       return ComplianceMapSchema.parse(parsed)
       
     } catch (fallbackError) {

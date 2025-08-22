@@ -6,6 +6,11 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['./tests/setup.ts'],
+    env: {
+      DATABASE_URL: 'postgresql://test:test@localhost:5432/gov2_test',
+      OPENAI_API_KEY: 'sk-test-key',
+      NEXTAUTH_SECRET: 'test-secret',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
