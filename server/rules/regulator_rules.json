@@ -1,0 +1,144 @@
+{
+  "version": "1.0.0",
+  "checksum": "initial",
+  "rules": [
+    {
+      "id": "eu_gdpr_base",
+      "name": "EU GDPR Base Requirements",
+      "triggers": {
+        "jurisdictions": ["EU", "UK", "EEA"],
+        "dataTypes": ["personal_data", "customer_data"],
+        "conditions": {
+          "any_eu_data_processing": true
+        }
+      },
+      "results": {
+        "jurisdictions": ["EU"],
+        "regulators": ["EDPB", "National_DPAs"],
+        "frameworks": ["GDPR"]
+      },
+      "rationale": "Processing personal data of EU residents triggers GDPR compliance requirements"
+    },
+    {
+      "id": "uk_gdpr_base", 
+      "name": "UK GDPR Base Requirements",
+      "triggers": {
+        "jurisdictions": ["UK"],
+        "dataTypes": ["personal_data", "customer_data"]
+      },
+      "results": {
+        "jurisdictions": ["UK"],
+        "regulators": ["ICO"],
+        "frameworks": ["UK_GDPR"]
+      },
+      "rationale": "Processing personal data in the UK triggers UK GDPR (retained EU law) requirements"
+    },
+    {
+      "id": "iso27001_security",
+      "name": "ISO 27001 Information Security",
+      "triggers": {
+        "sectors": ["financial", "healthcare", "technology", "government"],
+        "companySize": ["sme", "large", "enterprise"],
+        "dataTypes": ["sensitive_data", "financial_data", "health_data"]
+      },
+      "results": {
+        "jurisdictions": ["Global"],
+        "regulators": ["ISO_Certification_Bodies"],
+        "frameworks": ["ISO27001"]
+      },
+      "rationale": "Organizations handling sensitive data benefit from ISO 27001 certification for security management"
+    },
+    {
+      "id": "nis2_critical_infrastructure",
+      "name": "NIS2 Critical Infrastructure Requirements",
+      "triggers": {
+        "jurisdictions": ["EU"],
+        "sectors": ["energy", "transport", "banking", "financial", "health", "drinking_water", "waste_water", "digital_infrastructure", "public_administration"],
+        "companySize": ["large", "enterprise"]
+      },
+      "results": {
+        "jurisdictions": ["EU"],
+        "regulators": ["ENISA", "National_CSIRT"],
+        "frameworks": ["NIS2"]
+      },
+      "rationale": "Large entities in essential and important sectors within EU must comply with NIS2 cybersecurity requirements"
+    },
+    {
+      "id": "financial_sector_eu",
+      "name": "EU Financial Sector Additional Requirements",
+      "triggers": {
+        "jurisdictions": ["EU"],
+        "sectors": ["banking", "financial", "payment_services", "investment"],
+        "conditions": {
+          "handles_financial_transactions": true
+        }
+      },
+      "results": {
+        "jurisdictions": ["EU"],
+        "regulators": ["EBA", "ESMA", "EIOPA"],
+        "frameworks": ["PCI_DSS", "DORA"]
+      },
+      "rationale": "Financial entities require additional cybersecurity and operational resilience measures"
+    },
+    {
+      "id": "uk_financial_sector",
+      "name": "UK Financial Sector Requirements", 
+      "triggers": {
+        "jurisdictions": ["UK"],
+        "sectors": ["banking", "financial", "payment_services"],
+        "conditions": {
+          "fca_regulated": true
+        }
+      },
+      "results": {
+        "jurisdictions": ["UK"],
+        "regulators": ["FCA", "PRA", "Bank_of_England"],
+        "frameworks": ["UK_GDPR", "PCI_DSS", "FCA_Handbook"]
+      },
+      "rationale": "UK financial services require FCA/PRA compliance in addition to data protection"
+    },
+    {
+      "id": "healthcare_hipaa",
+      "name": "Healthcare Data Protection (US)",
+      "triggers": {
+        "jurisdictions": ["US"],
+        "sectors": ["healthcare", "medical_devices"],
+        "dataTypes": ["health_data", "medical_records"]
+      },
+      "results": {
+        "jurisdictions": ["US"],
+        "regulators": ["HHS_OCR"],
+        "frameworks": ["HIPAA"]
+      },
+      "rationale": "Healthcare entities handling protected health information must comply with HIPAA"
+    },
+    {
+      "id": "startup_minimum",
+      "name": "Startup Minimum Compliance",
+      "triggers": {
+        "companySize": ["startup"],
+        "dataTypes": ["customer_data", "personal_data"]
+      },
+      "results": {
+        "jurisdictions": ["Applicable"],
+        "regulators": ["Local_DPA"],
+        "frameworks": ["Data_Protection_Basics"]
+      },
+      "rationale": "Even small startups need basic data protection practices when handling personal data"
+    }
+  ],
+  "sectors": [
+    "technology", "financial", "healthcare", "energy", "transport", "banking", 
+    "payment_services", "investment", "government", "education", "retail",
+    "manufacturing", "telecommunications", "media", "consulting", "other"
+  ],
+  "data_types": [
+    "personal_data", "customer_data", "employee_data", "financial_data",
+    "health_data", "biometric_data", "location_data", "sensitive_data",
+    "public_data", "internal_data", "third_party_data"
+  ],
+  "jurisdictions": [
+    "UK", "EU", "US", "Canada", "Australia", "Germany", "France", 
+    "Netherlands", "Ireland", "Switzerland", "Global"
+  ]
+}
