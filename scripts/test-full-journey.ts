@@ -17,8 +17,8 @@ async function testCompleteJourney() {
   console.log('🛤️  TESTING COMPLETE USER JOURNEY\n')
   console.log('Testing every action and trigger in the Gov 2.0 platform...\n')
 
-  let testOrgId: string
-  let testAssessmentId: string
+  let testOrgId: string = ''
+  let testAssessmentId: string = ''
 
   try {
     // =============================================================================
@@ -52,7 +52,7 @@ async function testCompleteJourney() {
     const { RulesEngineService } = await import('@/server/services/rules-engine')
     const rulesEngine = new RulesEngineService()
 
-    const scopeData = {
+    const scopeData: import('@/lib/validations/scope').ScopeFormData = {
       companySize: 'startup',
       sector: ['technology'],
       dataTypes: ['personal_data', 'customer_data'],
@@ -160,7 +160,7 @@ async function testCompleteJourney() {
     // =============================================================================
     console.log('\n🏦 JOURNEY 2: Financial Enterprise Multi-Framework')
     
-    const complexScope = {
+    const complexScope: import('@/lib/validations/scope').ScopeFormData = {
       companySize: 'enterprise',
       sector: ['financial', 'banking', 'technology'],
       dataTypes: ['financial_data', 'personal_data', 'sensitive_data'],

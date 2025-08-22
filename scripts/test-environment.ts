@@ -13,6 +13,7 @@ config({ path: resolve(process.cwd(), '.env.local') })
 config({ path: resolve(process.cwd(), '.env') })
 
 import { db } from '@/server/db'
+import { type ScopeFormData } from '@/lib/validations/scope'
 
 async function testEnvironment() {
   console.log('🧪 Testing Gov 2.0 Environment Setup...\n')
@@ -121,7 +122,9 @@ async function testEnvironment() {
     console.log(`   ✅ Regulators: ${analysis.regulators.join(', ')}`)
     console.log(`   ✅ Matched rules: ${analysis.matchedRules.length}`)
 
-    expect(analysis.frameworks.length).toBeGreaterThan(0)
+    if (analysis.frameworks.length === 0) {
+      throw new Error('No frameworks identified')
+    }
 
   } catch (error) {
     console.log('   ❌ Rules engine test failed:', error)
