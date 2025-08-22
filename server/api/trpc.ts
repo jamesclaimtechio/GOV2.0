@@ -105,9 +105,73 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 })
 
 /**
+ * Demo middleware that allows unauthenticated users for assessment creation
+ * Creates a demo user session automatically
+ */
+const demoUserMiddleware = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    // Create/find demo organization and user for unauthenticated access
+    let demoOrg = await ctx.db.organization.findFirst({
+      where: { name: 'Demo Corporation Ltd' },
+    })
+    
+    if (!demoOrg) {
+      demoOrg = await ctx.db.organization.create({
+        data: { name: 'Demo Corporation Ltd' },
+      })
+    }
+
+    let demoUser = await ctx.db.user.findFirst({
+      where: { email: 'demo@gov20.com' },
+    })
+
+    if (!demoUser) {
+      demoUser = await ctx.db.user.create({
+        data: {
+          email: 'demo@gov20.com',
+          name: 'Demo User',
+          role: 'COMPLIANCE_LEAD',
+          orgId: demoOrg.id,
+        },
+      })
+    }
+
+    // Create demo session
+    const demoSession = {
+      user: {
+        id: demoUser.id,
+        email: demoUser.email,
+        name: demoUser.name,
+        role: demoUser.role,
+        orgId: demoUser.orgId,
+      },
+    }
+
+    return next({
+      ctx: {
+        session: demoSession,
+        db: ctx.db,
+      },
+    })
+  }
+
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  })
+})
+
+/**
  * Protected procedure
  **/
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed)
+
+/**
+ * Demo procedure that allows unauthenticated access
+ * Automatically creates demo user for testing
+ **/
+export const demoProcedure = t.procedure.use(demoUserMiddleware)
 
 /**
  * Role-based procedures

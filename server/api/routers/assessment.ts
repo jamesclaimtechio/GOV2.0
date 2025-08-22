@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
+import { createTRPCRouter, protectedProcedure, demoProcedure } from '@/server/api/trpc'
 import { TRPCError } from '@trpc/server'
 import { RulesEngineService } from '@/server/services/rules-engine'
 import { scopeFormSchema } from '@/lib/validations/scope'
@@ -14,7 +14,7 @@ const setScopeSchema = z.object({
 })
 
 export const assessmentRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: demoProcedure
     .input(createAssessmentSchema)
     .mutation(async ({ ctx, input }) => {
       // Ensure user has orgId in session
@@ -133,7 +133,7 @@ export const assessmentRouter = createTRPCRouter({
     }),
 
   scope: createTRPCRouter({
-    set: protectedProcedure
+    set: demoProcedure
       .input(setScopeSchema)
       .mutation(async ({ ctx, input }) => {
         // Verify assessment belongs to user's org
