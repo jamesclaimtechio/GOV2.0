@@ -1,5 +1,6 @@
 import { createTRPCRouter } from '@/server/api/trpc'
 import { assessmentRouter } from './routers/assessment'
+import { exportRouter } from './routers/export'
 
 /**
  * This is the primary router for your server.
@@ -7,6 +8,7 @@ import { assessmentRouter } from './routers/assessment'
  */
 export const appRouter = createTRPCRouter({
   assessment: assessmentRouter,
+  export: exportRouter,
 })
 
 // export type definition of API
