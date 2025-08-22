@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
-import { ChevronRight, ChevronLeft, Building2, Shield, Globe, Database } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Building2, Shield, Globe, Database, Loader2 } from 'lucide-react'
 import { 
   scopeFormSchema, 
   type ScopeFormData,
@@ -54,6 +54,7 @@ const STEPS = [
 
 export function ScopingWizard({ onComplete, onCancel }: ScopingWizardProps) {
   const [currentStep, setCurrentStep] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   const form = useForm<ScopeFormData>({
     resolver: zodResolver(scopeFormSchema),
@@ -85,8 +86,16 @@ export function ScopingWizard({ onComplete, onCancel }: ScopingWizardProps) {
     }
   }
 
-  const onSubmit = (data: ScopeFormData) => {
-    onComplete(data)
+  const onSubmit = async (data: ScopeFormData) => {
+    setIsSubmitting(true)
+    try {
+      console.log('🔄 Submitting scoping data:', data)
+      await onComplete(data)
+    } catch (error) {
+      console.error('❌ Scoping submission failed:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleCheckboxChange = (field: keyof ScopeFormData, value: string, checked: boolean) => {
@@ -309,6 +318,7 @@ export function ScopingWizard({ onComplete, onCancel }: ScopingWizardProps) {
                   variant="outline"
                   onClick={currentStep === 0 ? onCancel : prevStep}
                   className="flex items-center space-x-2"
+                  disabled={isSubmitting}
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>{currentStep === 0 ? 'Cancel' : 'Previous'}</span>
@@ -319,6 +329,7 @@ export function ScopingWizard({ onComplete, onCancel }: ScopingWizardProps) {
                     type="button"
                     onClick={nextStep}
                     className="flex items-center space-x-2"
+                    disabled={isSubmitting}
                   >
                     <span>Continue</span>
                     <ChevronRight className="w-4 h-4" />
@@ -327,9 +338,19 @@ export function ScopingWizard({ onComplete, onCancel }: ScopingWizardProps) {
                   <Button
                     type="submit"
                     className="flex items-center space-x-2"
+                    disabled={isSubmitting}
                   >
-                    <span>Analyze Compliance Requirements</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Analyzing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Analyze Compliance Requirements</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </>
+                    )}
                   </Button>
                 )}
               </div>
@@ -361,6 +382,21 @@ export function ScopingWizard({ onComplete, onCancel }: ScopingWizardProps) {
             )
           })}
         </div>
+
+        {/* Debug info in development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-8 p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+            <h3 className="text-white font-semibold mb-2">Debug Info:</h3>
+            <pre className="text-slate-300 text-xs overflow-auto">
+              {JSON.stringify({ 
+                currentStep, 
+                isSubmitting,
+                formData: watchedValues,
+                errors: Object.keys(errors),
+              }, null, 2)}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -13,6 +13,7 @@ export default function NewAssessmentPage() {
   const router = useRouter()
   const [showWizard, setShowWizard] = useState(false)
   const [results, setResults] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const createAssessment = trpc.assessment.create.useMutation()
   const setScopeData = trpc.assessment.scope.set.useMutation()
@@ -22,25 +23,41 @@ export default function NewAssessmentPage() {
   }
 
   const handleWizardComplete = async (scopeData: ScopeFormData) => {
+    setIsLoading(true)
     try {
+      console.log('🔄 Starting assessment creation with data:', scopeData)
+      
       // Create new assessment
+      console.log('📝 Creating assessment...')
       const assessment = await createAssessment.mutateAsync({
         name: `Compliance Assessment - ${new Date().toLocaleDateString()}`,
       })
+      console.log('✅ Assessment created:', assessment)
 
       // Set scope data and get analysis
+      console.log('🤖 Running AI analysis...')
       const scopeResponse = await setScopeData.mutateAsync({
         assessmentId: assessment.id,
         answers: scopeData,
       })
+      console.log('✅ Scope analysis complete:', scopeResponse)
 
-      setResults({
+      const resultsData = {
         assessment,
         scope: scopeResponse,
-      })
+      }
+      console.log('📊 Setting results state:', resultsData)
+      
+      setResults(resultsData)
       setShowWizard(false)
+      
+      console.log('🎉 Assessment workflow complete!')
+      
     } catch (error) {
-      console.error('Failed to create assessment:', error)
+      console.error('❌ Failed to create assessment:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
